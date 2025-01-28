@@ -7,6 +7,15 @@ To start your Phoenix server:
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
+## Testing
+
+To run tests:
+
+  * Run all tests with `mix test`
+  * Run a specific test file with `mix test test/path/to/file_test.exs`
+  * Run a specific test line with `mix test test/path/to/file_test.exs:line_number`
+  * Run tests with coverage report: `mix test --cover`
+
 Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
 
 ## Learn more
