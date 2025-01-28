@@ -21,7 +21,16 @@ defmodule FeedproxyWeb.Api.SubscriptionControllerTest do
 
     test "lists all subscriptions", %{conn: conn} do
       conn = get(conn, ~p"/api/subscriptions")
-      assert [%{"id" => _id}] = json_response(conn, 200)["data"]
+
+      assert [
+               %{
+                 "id" => _id,
+                 "url" => _url,
+                 "name" => _name,
+                 "feed_type" => _feed_type,
+                 "last_synced_at" => _last_synced_at
+               }
+             ] = json_response(conn, 200)["data"]
     end
   end
 
