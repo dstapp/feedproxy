@@ -13,12 +13,24 @@ defmodule Feedproxy.Subscription do
     timestamps(type: :utc_datetime)
   end
 
-  @doc false
+  @doc """
+  Changeset for external API operations (create/update).
+  Does not allow last_synced_at to be set from external input.
+  """
   def changeset(subscription, attrs) do
     subscription
-    |> cast(attrs, [:name, :url, :feed_type, :last_synced_at])
-    |> validate_required([:name, :url, :feed_type, :last_synced_at])
+    |> cast(attrs, [:name, :url, :feed_type])
+    |> validate_required([:name, :url, :feed_type])
     |> validate_url(:url)
+    |> unique_constraint(:url, message: "Subscription already exists for this URL")
+  end
+
+  @doc """
+  Internal changeset for updating sync timestamp.
+  """
+  def sync_changeset(subscription, timestamp) do
+    subscription
+    |> change(last_synced_at: timestamp)
   end
 
   defp validate_url(changeset, field) do

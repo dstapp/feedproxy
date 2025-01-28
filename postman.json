@@ -1,0 +1,123 @@
+{
+    "info": {
+      "name": "Feedproxy Subscriptions",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "List Subscriptions",
+        "request": {
+          "method": "GET",
+          "url": {
+            "raw": "http://localhost:4000/api/subscriptions",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "4000",
+            "path": ["api", "subscriptions"]
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Create Subscription",
+        "request": {
+          "method": "POST",
+          "url": {
+            "raw": "http://localhost:4000/api/subscriptions",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "4000",
+            "path": ["api", "subscriptions"]
+          },
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"subscription\": {\n    \"name\": \"Example Feed\",\n    \"url\": \"https://example.com/feed.xml\",\n    \"feed_type\": \"rss\",\n    \"last_synced_at\": \"2024-01-28T12:30:26Z\"\n  }\n}"
+          }
+        }
+      },
+      {
+        "name": "Get Subscription",
+        "request": {
+          "method": "GET",
+          "url": {
+            "raw": "http://localhost:4000/api/subscriptions/:id",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "4000",
+            "path": ["api", "subscriptions", ":id"],
+            "variable": [
+              {
+                "key": "id",
+                "value": "subscription_id_here"
+              }
+            ]
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Update Subscription",
+        "request": {
+          "method": "PUT",
+          "url": {
+            "raw": "http://localhost:4000/api/subscriptions/:id",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "4000",
+            "path": ["api", "subscriptions", ":id"],
+            "variable": [
+              {
+                "key": "id",
+                "value": "subscription_id_here"
+              }
+            ]
+          },
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"subscription\": {\n    \"name\": \"Updated Feed Name\",\n    \"url\": \"https://updated-example.com/feed.xml\"\n  }\n}"
+          }
+        }
+      },
+      {
+        "name": "Delete Subscription",
+        "request": {
+          "method": "DELETE",
+          "url": {
+            "raw": "http://localhost:4000/api/subscriptions/:id",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "4000",
+            "path": ["api", "subscriptions", ":id"],
+            "variable": [
+              {
+                "key": "id",
+                "value": "subscription_id_here"
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }

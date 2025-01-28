@@ -20,6 +20,12 @@ defmodule FeedproxyWeb.Router do
     get "/", PageController, :home
   end
 
+  scope "/api", FeedproxyWeb.Api do
+    pipe_through :api
+
+    resources "/subscriptions", SubscriptionController
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", FeedproxyWeb do
   #   pipe_through :api
