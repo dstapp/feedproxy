@@ -7,7 +7,7 @@ defmodule Feedproxy.Repo.Migrations.CreateSubscriptions do
       add :name, :string
       add :url, :string
       add :feed_type, :string
-      add :last_synced_at, :utc_datetime
+      add :last_synced_at, :utc_datetime_usec
 
       timestamps(type: :utc_datetime)
     end

@@ -7,7 +7,7 @@ defmodule Feedproxy.FeedItem do
   schema "feed_items" do
     field :title, :string
     field :url, :string
-    field :published_at, :utc_datetime
+    field :published_at, :utc_datetime_usec
     field :excerpt, :string
     field :is_read, :boolean, default: false
     field :is_starred, :boolean, default: false

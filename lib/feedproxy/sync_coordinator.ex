@@ -8,17 +8,21 @@ defmodule Feedproxy.SyncCoordinator do
   def sync_subscriptions do
     subscriptions = Repo.all(Subscription)
 
-    tasks = subscriptions
-    |> Enum.map(fn subscription ->
-      Task.async(fn -> sync_subscription(subscription) end)
-    end)
+    tasks =
+      subscriptions
+      |> Enum.map(fn subscription ->
+        Task.async(fn -> sync_subscription(subscription) end)
+      end)
 
-    results = Task.await_many(tasks, 30_000)  # reconsider 30 second timeout
+    # reconsider 30 second timeout
+    results = Task.await_many(tasks, 30_000)
 
     # Filter successful results and flatten the list of items
-    feed_items = results
-    |> Enum.filter(fn result -> match?({:ok, _items}, result) end) # Handle failure ones and write information to subscription
-    |> Enum.flat_map(fn {:ok, items} -> items end)
+    feed_items =
+      results
+      # Handle failure ones and write information to subscription
+      |> Enum.filter(fn result -> match?({:ok, _items}, result) end)
+      |> Enum.flat_map(fn {:ok, items} -> items end)
 
     IO.inspect(feed_items)
 
@@ -26,7 +30,7 @@ defmodule Feedproxy.SyncCoordinator do
     # @todo write new feeditems to db
 
     # Insert all items into the database
-    #Repo.insert_all(FeedItem, feed_items, on_conflict: :nothing)
+    Repo.insert_all(FeedItem, feed_items, on_conflict: :nothing)
   end
 
   def sync_subscription(%Subscription{} = subscription) do
@@ -63,6 +67,7 @@ defmodule Feedproxy.SyncCoordinator do
     case NaiveDateTime.from_iso8601(date_string) do
       {:ok, datetime} ->
         datetime
+
       _ ->
         # If that fails, default to current time
         NaiveDateTime.utc_now()

@@ -8,7 +8,7 @@ defmodule Feedproxy.Subscription do
     field :name, :string
     field :url, :string
     field :feed_type, :string
-    field :last_synced_at, :utc_datetime
+    field :last_synced_at, :utc_datetime_usec
 
     timestamps(type: :utc_datetime)
   end
@@ -39,6 +39,7 @@ defmodule Feedproxy.Subscription do
         %URI{scheme: scheme, host: host}
         when scheme in ["http", "https"] and not is_nil(host) ->
           []
+
         _ ->
           [{field, "must be a valid URL"}]
       end
