@@ -24,6 +24,7 @@ defmodule FeedproxyWeb.Router do
     pipe_through :api
 
     resources "/subscriptions", SubscriptionController
+    resources "/feed-items", FeedItemController
   end
 
   # Other scopes may use custom stacks.

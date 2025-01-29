@@ -20,6 +20,6 @@ defmodule Feedproxy.FeedItem do
   def changeset(feed_item, attrs) do
     feed_item
     |> cast(attrs, [:title, :published_at, :url, :excerpt, :is_read, :is_starred])
-    |> validate_required([:title, :published_at, :url, :excerpt, :is_read, :is_starred])
+    |> validate_required([:title, :published_at, :url])
   end
 end
