@@ -4,13 +4,20 @@ defmodule Feedproxy.Subscription do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
+
   schema "subscriptions" do
     field :name, :string
     field :url, :string
     field :feed_type, :string
-    field :last_synced_at, :utc_datetime, default: &default_last_synced_at/0
+    field :last_synced_at, :utc_datetime, autogenerate: {__MODULE__, :generate_last_synced_at, []}
 
     timestamps(type: :utc_datetime)
+  end
+
+  def generate_last_synced_at do
+    DateTime.utc_now()
+    |> DateTime.add(-7 * 24 * 60 * 60, :second)
+    |> DateTime.truncate(:second)
   end
 
   @doc """
@@ -44,11 +51,5 @@ defmodule Feedproxy.Subscription do
           [{field, "must be a valid URL"}]
       end
     end)
-  end
-
-  defp default_last_synced_at do
-    DateTime.utc_now()
-    |> DateTime.add(-7 * 24 * 60 * 60, :second)
-    |> DateTime.truncate(:second)
   end
 end

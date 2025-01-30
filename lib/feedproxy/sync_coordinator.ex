@@ -11,7 +11,7 @@ defmodule Feedproxy.SyncCoordinator do
     tasks =
       subscriptions
       |> Enum.map(fn subscription ->
-        Task.async(fn -> sync_subscription(subscription, sync_start_time) end)
+        Task.async(fn -> sync_subscription(subscription) end)
       end)
 
     # reconsider 30 second timeout
@@ -44,8 +44,8 @@ defmodule Feedproxy.SyncCoordinator do
       |> Repo.update()
     end)
   end
+  def sync_subscription(%Subscription{} = subscription) do
 
-  def sync_subscription(%Subscription{} = subscription, sync_start_time) do
     IO.puts("Syncing subscription #{subscription.id}")
 
     case fetch_feed(subscription.url) do
@@ -70,19 +70,6 @@ defmodule Feedproxy.SyncCoordinator do
 
       {:error, %HTTPoison.Error{reason: reason}} ->
         {:error, reason}
-    end
-  end
-
-  # RSS dates look like: "Wed, 29 Jan 2025 13:35:00 +0100"
-  defp parse_rss_date(date_string) do
-    # First try RFC1123 format (most common in RSS)
-    case NaiveDateTime.from_iso8601(date_string) do
-      {:ok, datetime} ->
-        datetime
-
-      _ ->
-        # If that fails, default to current time
-        NaiveDateTime.utc_now()
     end
   end
 end
