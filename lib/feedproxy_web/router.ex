@@ -28,6 +28,7 @@ defmodule FeedproxyWeb.Router do
       get "/", FeedItemController, :index, as: :index
       post "/sync", FeedItemController, :sync, as: :sync
     end
+    post "/subscriptions/import", SubscriptionController, :import
   end
 
   # Other scopes may use custom stacks.

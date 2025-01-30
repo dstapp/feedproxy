@@ -83,6 +83,36 @@ defmodule FeedproxyWeb.Api.SubscriptionControllerTest do
     end
   end
 
+  describe "import" do
+    test "imports subscriptions from OPML file", %{conn: conn} do
+      opml = """
+      <?xml version="1.0" encoding="UTF-8"?>
+      <opml version="1.0">
+        <head><title>Feed Subscriptions</title></head>
+        <body>
+          <outline title="Example Feed" type="rss" xmlUrl="https://example.com/feed.xml"/>
+          <outline title="Another Feed" type="atom" xmlUrl="https://another.com/feed.atom"/>
+        </body>
+      </opml>
+      """
+
+      upload = %Plug.Upload{
+        path: Path.expand("test/fixtures/feeds.opml"),
+        filename: "feeds.opml"
+      }
+
+      # Write test file
+      File.write!(upload.path, opml)
+
+      conn = post(conn, ~p"/api/subscriptions/import", %{"file" => upload})
+
+      assert json_response(conn, 201)["data"] |> length() == 2
+
+      # Cleanup
+      File.rm!(upload.path)
+    end
+  end
+
   # Helper function to create a subscription for tests
   defp create_subscription(_) do
     {:ok, subscription} =

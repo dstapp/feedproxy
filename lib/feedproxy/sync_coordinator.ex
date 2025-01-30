@@ -14,7 +14,6 @@ defmodule Feedproxy.SyncCoordinator do
         Task.async(fn -> sync_subscription(subscription) end)
       end)
 
-    # reconsider 30 second timeout
     results = Task.await_many(tasks, 30_000)
 
     # Filter successful results and flatten the list of items
@@ -23,29 +22,33 @@ defmodule Feedproxy.SyncCoordinator do
       |> Enum.filter(fn result -> match?({:ok, _items}, result) end)
       |> Enum.flat_map(fn {:ok, items} -> items end)
 
-    IO.inspect(feed_items)
-
-    # @todo get items that are newer than last_synced_at
-    # @todo write new feeditems to db
-
-    # Insert all items into the database
-    Repo.insert_all(FeedItem, feed_items, on_conflict: :nothing)
-
-    # Update last_synced_at using the sync_start_time
-    results
-    |> Enum.filter(fn
-      {:ok, _items} -> true
-      {:error, _} -> false
+    # Insert all items into the database using changesets
+    feed_items
+    |> Enum.map(fn item ->
+      FeedItem.changeset(%FeedItem{}, item)
     end)
-    |> Enum.each(fn {:ok, items} ->
-      subscription_id = List.first(items).subscription_id
-      Repo.get(Subscription, subscription_id)
-      |> Ecto.Changeset.change(%{last_synced_at: sync_start_time})
-      |> Repo.update()
+    |> Enum.each(fn changeset ->
+      Repo.insert(changeset, on_conflict: :nothing)
+    end)
+
+    # Update last_synced_at for all successfully synced subscriptions
+    results
+    |> Enum.each(fn
+      {:ok, []} ->
+        # Successfully synced but no new items
+        nil
+      {:ok, items} ->
+        subscription_id = List.first(items).subscription_id
+        Repo.get(Subscription, subscription_id)
+        |> Subscription.changeset(%{last_synced_at: sync_start_time})
+        |> Repo.update()
+      {:error, _} ->
+        # Failed sync, skip updating last_synced_at
+        nil
     end)
   end
-  def sync_subscription(%Subscription{} = subscription) do
 
+  def sync_subscription(%Subscription{} = subscription) do
     IO.puts("Syncing subscription #{subscription.id}")
 
     case fetch_feed(subscription.url) do
