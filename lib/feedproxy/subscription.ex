@@ -8,7 +8,7 @@ defmodule Feedproxy.Subscription do
     field :name, :string
     field :url, :string
     field :feed_type, :string
-    field :last_synced_at, :utc_datetime_usec
+    field :last_synced_at, :utc_datetime, default: &default_last_synced_at/0
 
     timestamps(type: :utc_datetime)
   end
@@ -44,5 +44,11 @@ defmodule Feedproxy.Subscription do
           [{field, "must be a valid URL"}]
       end
     end)
+  end
+
+  defp default_last_synced_at do
+    DateTime.utc_now()
+    |> DateTime.add(-7 * 24 * 60 * 60, :second)
+    |> DateTime.truncate(:second)
   end
 end

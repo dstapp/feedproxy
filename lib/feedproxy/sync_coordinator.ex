@@ -3,15 +3,15 @@ defmodule Feedproxy.SyncCoordinator do
   alias Feedproxy.Repo
   alias Feedproxy.FeedItem
   alias Feedproxy.FeedParser
-  import SweetXml
 
   def sync_subscriptions do
+    sync_start_time = DateTime.utc_now() |> DateTime.truncate(:second)
     subscriptions = Repo.all(Subscription)
 
     tasks =
       subscriptions
       |> Enum.map(fn subscription ->
-        Task.async(fn -> sync_subscription(subscription) end)
+        Task.async(fn -> sync_subscription(subscription, sync_start_time) end)
       end)
 
     # reconsider 30 second timeout
@@ -20,7 +20,6 @@ defmodule Feedproxy.SyncCoordinator do
     # Filter successful results and flatten the list of items
     feed_items =
       results
-      # Handle failure ones and write information to subscription
       |> Enum.filter(fn result -> match?({:ok, _items}, result) end)
       |> Enum.flat_map(fn {:ok, items} -> items end)
 
@@ -31,9 +30,22 @@ defmodule Feedproxy.SyncCoordinator do
 
     # Insert all items into the database
     Repo.insert_all(FeedItem, feed_items, on_conflict: :nothing)
+
+    # Update last_synced_at using the sync_start_time
+    results
+    |> Enum.filter(fn
+      {:ok, _items} -> true
+      {:error, _} -> false
+    end)
+    |> Enum.each(fn {:ok, items} ->
+      subscription_id = List.first(items).subscription_id
+      Repo.get(Subscription, subscription_id)
+      |> Ecto.Changeset.change(%{last_synced_at: sync_start_time})
+      |> Repo.update()
+    end)
   end
 
-  def sync_subscription(%Subscription{} = subscription) do
+  def sync_subscription(%Subscription{} = subscription, sync_start_time) do
     IO.puts("Syncing subscription #{subscription.id}")
 
     case fetch_feed(subscription.url) do
