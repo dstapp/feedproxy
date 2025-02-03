@@ -1,9 +1,7 @@
 defmodule FeedproxyWeb.Api.FeedItemController do
   use FeedproxyWeb, :controller
 
-  alias Feedproxy.FeedItem
-  alias Feedproxy.Repo
-  alias Feedproxy.SyncCoordinator
+  alias Feedproxy.{FeedItem, Repo, FeedSyncer}
 
   action_fallback FeedproxyWeb.FallbackController
 
@@ -13,7 +11,7 @@ defmodule FeedproxyWeb.Api.FeedItemController do
   end
 
   def sync(conn, _params) do
-    SyncCoordinator.sync_subscriptions()
+    FeedSyncer.sync_now()
     render(conn, :index, feed_items: [])
   end
 end

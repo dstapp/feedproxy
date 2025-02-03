@@ -15,11 +15,11 @@ defmodule FeedproxyWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", FeedproxyWeb do
-    pipe_through :browser
+  # scope "/", FeedproxyWeb do
+  #   pipe_through :browser
 
-    get "/", PageController, :home
-  end
+  #   get "/", PageController, :home
+  # end
 
   scope "/api", FeedproxyWeb.Api do
     pipe_through :api
