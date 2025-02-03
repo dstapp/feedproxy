@@ -7,7 +7,6 @@ defmodule Feedproxy.Subscription do
   schema "subscriptions" do
     field :name, :string
     field :url, :string
-    field :feed_type, :string
     field :last_synced_at, :utc_datetime_usec, autogenerate: {__MODULE__, :generate_last_synced_at, []}
 
     timestamps(type: :utc_datetime)
@@ -25,8 +24,8 @@ defmodule Feedproxy.Subscription do
   """
   def changeset(subscription, attrs) do
     subscription
-    |> cast(attrs, [:name, :url, :feed_type])
-    |> validate_required([:name, :url, :feed_type])
+    |> cast(attrs, [:name, :url])
+    |> validate_required([:name, :url])
     |> validate_url(:url)
     |> unique_constraint(:url, message: "Subscription already exists for this URL")
   end

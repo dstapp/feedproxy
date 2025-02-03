@@ -2,8 +2,6 @@ defmodule Feedproxy.FeedItemTest do
   alias Feedproxy.FeedItem
   use Feedproxy.DataCase
 
-  alias Feedproxy.Subscription
-
   describe "feed item" do
     @valid_attrs %{
       title: "Example article",

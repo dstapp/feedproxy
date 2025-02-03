@@ -3,9 +3,7 @@ defmodule Feedproxy.FeedParser do
   require Logger
 
   def parse(content, subscription) do
-    # Determine feed type from content instead of relying on subscription.feed_type
     feed_type = detect_feed_type(content)
-
 
     case feed_type do
       "rss" -> parse_rss(content, subscription)
@@ -88,7 +86,7 @@ defmodule Feedproxy.FeedParser do
           std_offset: 0
         }
       _ ->
-        Logger.warning("Failed to parse date: #{date_string}")
+        Logger.info("Failed to parse date: #{date_string}")
         DateTime.utc_now()
     end
   end
@@ -117,7 +115,7 @@ defmodule Feedproxy.FeedParser do
       {:ok, datetime, _offset} ->
         datetime
       _ ->
-        Logger.warning("Failed to parse atom date: #{date_string}")
+        Logger.info("Failed to parse atom date: #{date_string}")
         DateTime.utc_now()
     end
   end

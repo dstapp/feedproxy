@@ -7,10 +7,9 @@ defmodule Feedproxy.SubscriptionTest do
     @valid_attrs %{
       url: "https://example.com/feed.xml",
       name: "Example Feed",
-      feed_type: "rss",
       last_synced_at: ~U[2024-01-28 12:30:26Z]
     }
-    @invalid_attrs %{url: nil, name: nil, feed_type: nil, last_synced_at: nil}
+    @invalid_attrs %{url: nil, name: nil, last_synced_at: nil}
 
     test "changeset with valid attributes" do
       changeset = Subscription.changeset(%Subscription{}, @valid_attrs)

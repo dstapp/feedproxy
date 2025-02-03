@@ -10,7 +10,6 @@ defmodule FeedproxyWeb.Api.SubscriptionControllerTest do
     valid_attrs = %{
       "url" => "https://example.com/feed",
       "name" => "Test Feed",
-      "feed_type" => "rss"
     }
 
     {:ok, conn: put_req_header(conn, "accept", "application/json"), valid_attrs: valid_attrs}
@@ -27,7 +26,6 @@ defmodule FeedproxyWeb.Api.SubscriptionControllerTest do
                  "id" => _id,
                  "url" => _url,
                  "name" => _name,
-                 "feed_type" => _feed_type,
                  "last_synced_at" => _last_synced_at
                }
              ] = json_response(conn, 200)["data"]
@@ -45,7 +43,6 @@ defmodule FeedproxyWeb.Api.SubscriptionControllerTest do
                "id" => ^id,
                "url" => "https://example.com/feed",
                "name" => "Test Feed",
-               "feed_type" => "rss"
              } = json_response(conn, 200)["data"]
     end
 
@@ -119,7 +116,6 @@ defmodule FeedproxyWeb.Api.SubscriptionControllerTest do
       Feedproxy.Repo.insert(%Feedproxy.Subscription{
         url: "https://example.com/feed",
         name: "Test Feed",
-        feed_type: "rss"
       })
 
     %{subscription: subscription}

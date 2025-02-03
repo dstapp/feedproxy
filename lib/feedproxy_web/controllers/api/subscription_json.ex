@@ -20,7 +20,6 @@ defmodule FeedproxyWeb.Api.SubscriptionJSON do
       id: subscription.id,
       name: subscription.name,
       url: subscription.url,
-      feed_type: subscription.feed_type,
       last_synced_at: subscription.last_synced_at
     }
   end
