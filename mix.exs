@@ -58,8 +58,7 @@ defmodule Feedproxy.MixProject do
       {:bandit, "~> 1.5"},
       {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false},
       {:httpoison, "~> 2.0"},
-      {:sweet_xml, "~> 0.7.3"},
-      {:timex, "~> 3.7"}
+      {:sweet_xml, "~> 0.7.3"}
     ]
   end
 

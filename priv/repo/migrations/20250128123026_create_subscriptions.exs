@@ -2,8 +2,7 @@ defmodule Feedproxy.Repo.Migrations.CreateSubscriptions do
   use Ecto.Migration
 
   def change do
-    create table(:subscriptions, primary_key: false) do
-      add :id, :binary_id, primary_key: true
+    create table(:subscriptions) do
       add :name, :string
       add :url, :string
       add :feed_type, :string

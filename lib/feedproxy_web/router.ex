@@ -11,6 +11,7 @@ defmodule FeedproxyWeb.Router do
   end
 
   pipeline :api do
+    plug FeedproxyWeb.Plugs.RawBodyReader
     plug :accepts, ["json"]
   end
 
@@ -29,6 +30,38 @@ defmodule FeedproxyWeb.Router do
       post "/sync", FeedItemController, :sync, as: :sync
     end
     post "/subscriptions/import", SubscriptionController, :import
+  end
+
+  scope "/api/greader.php", FeedproxyWeb do
+    pipe_through :api
+
+    # Auth endpoints
+    post "/accounts/ClientLogin", GreaderApiController, :client_login
+    get "/reader/api/0/token", GreaderApiController, :token
+
+    # User info
+    get "/reader/api/0/user-info", GreaderApiController, :user_info
+
+    # Subscription management
+    get "/reader/api/0/subscription/list", GreaderApiController, :subscription_list
+    get "/reader/api/0/tag/list", GreaderApiController, :tag_list
+
+    # Stream contents
+    get "/reader/api/0/stream/contents/*streamId", GreaderApiController, :stream_contents
+    post "/reader/api/0/stream/contents/*streamId", GreaderApiController, :stream_contents
+
+    # Item state management
+    post "/reader/api/0/edit-tag", GreaderApiController, :edit_tag
+    post "/reader/api/0/mark-all-as-read", GreaderApiController, :mark_all_as_read
+
+    # Unread counts
+    get "/reader/api/0/unread-count", GreaderApiController, :unread_count
+
+    # Stream item IDs
+    get "/reader/api/0/stream/items/ids", GreaderApiController, :stream_item_ids
+
+    # Stream item contents
+    post "/reader/api/0/stream/items/contents", GreaderApiController, :stream_contents
   end
 
   # Other scopes may use custom stacks.
