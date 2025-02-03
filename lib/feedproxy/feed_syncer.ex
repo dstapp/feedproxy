@@ -1,8 +1,39 @@
-defmodule Feedproxy.SyncCoordinator do
-  alias Feedproxy.Subscription
-  alias Feedproxy.Repo
-  alias Feedproxy.FeedItem
-  alias Feedproxy.FeedParser
+defmodule Feedproxy.FeedSyncer do
+  use GenServer
+  alias Feedproxy.{Subscription, FeedParser, Repo, FeedItem}
+  require Logger
+
+  def start_link(_args) do
+    GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
+  end
+
+  @impl true
+  def init(state) do
+    schedule_work()
+    {:ok, state}
+  end
+
+  @impl true
+  def handle_info(:work, state) do
+    sync_subscriptions()
+    schedule_work()
+    {:noreply, state}
+  end
+
+  # Public API for manual syncing
+  def sync_now do
+    GenServer.cast(__MODULE__, :sync)
+  end
+
+  @impl true
+  def handle_cast(:sync, state) do
+    sync_subscriptions()
+    {:noreply, state}
+  end
+
+  defp schedule_work do
+    Process.send_after(self(), :work, 60_000)
+  end
 
   def sync_subscriptions do
     sync_start_time = DateTime.utc_now() |> DateTime.truncate(:second)
