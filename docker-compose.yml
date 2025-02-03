@@ -2,13 +2,12 @@ services:
   feedproxy:
     build: ./
     restart: unless-stopped
-    # volumes:
-    #  - ./data:/data
     environment:
       UID: 1000
       GID: 1000
-      DATABASE_PATH: /app/feedproxy.db
+      DATABASE_PATH: /data/feedproxy.db
       SECRET_KEY_BASE: GtEq3jHhpTOVjr6gxIAV93gQszJG70ijQQoKbYPJqYBUZG0LTo9Dwlp9mmyKbRfiRz3N2oYycwBoppr3UuSNmQ==  # openssl rand -base64 64
-      RELEASE_NAME: feedproxy
+    volumes:
+      - ./data:/data
     ports:
-      - "4000:4000"
+    - "4000:4000"
