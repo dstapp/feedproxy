@@ -1,0 +1,14 @@
+services:
+  feedproxy:
+    build: ./
+    restart: unless-stopped
+    # volumes:
+    #  - ./data:/data
+    environment:
+      DATABASE_PATH: /app/feedproxy.db
+      UID: 1000
+      GID: 1000
+      SECRET_KEY_BASE: changemenow
+      RELEASE_NAME: feedproxy
+    ports:
+      - "4000:4000"
