@@ -1,7 +1,7 @@
 defmodule FeedproxyWeb.Api.SubscriptionController do
   use FeedproxyWeb, :controller
 
-  alias Feedproxy.{Subscription, Repo, OpmlParser}
+  alias Feedproxy.{Subscription, Repo, OpmlParser, FeedSyncer}
 
   action_fallback FeedproxyWeb.FallbackController
 
@@ -43,6 +43,8 @@ defmodule FeedproxyWeb.Api.SubscriptionController do
     with {:ok, content} <- File.read(upload.path),
          feeds <- OpmlParser.parse(content),
          {:ok, subscriptions} <- create_subscriptions_from_opml(feeds) do
+
+      FeedSyncer.sync_now()
 
       conn
       |> put_status(:created)
