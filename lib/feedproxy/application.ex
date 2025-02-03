@@ -18,7 +18,8 @@ defmodule Feedproxy.Application do
       # Start a worker by calling: Feedproxy.Worker.start_link(arg)
       # {Feedproxy.Worker, arg},
       # Start to serve requests, typically the last entry
-      FeedproxyWeb.Endpoint
+      FeedproxyWeb.Endpoint,
+      Feedproxy.FeedUpdaterTask
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -1,6 +1,5 @@
 defmodule FeedproxyWeb.Api.FeedItemJSON do
   alias Feedproxy.FeedItem
-  alias Feedproxy.Subscription
 
   def index(%{feed_items: feed_items}) do
     %{data: for(feed_item <- feed_items, do: data(feed_item))}

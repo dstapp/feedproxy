@@ -49,8 +49,6 @@ defmodule Feedproxy.SyncCoordinator do
   end
 
   def sync_subscription(%Subscription{} = subscription) do
-    IO.puts("Syncing subscription #{subscription.id}")
-
     case fetch_feed(subscription.url) do
       {:ok, feed_content} ->
         items = FeedParser.parse(feed_content, subscription)

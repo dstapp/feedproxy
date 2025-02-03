@@ -1,7 +1,5 @@
 defmodule Feedproxy.FeedParser do
   import SweetXml
-  alias Feedproxy.FeedItem
-  alias Feedproxy.Subscription
 
   def parse(content, subscription) do
     # Determine feed type from content instead of relying on subscription.feed_type
@@ -20,32 +18,26 @@ defmodule Feedproxy.FeedParser do
       cond do
         # Check for RSS 2.0 with version attribute (most common case)
         content |> xpath(~x"//rss[@version='2.0']") ->
-          IO.puts("Detected RSS 2.0 via version attribute")
           "rss"
 
         # Check for RSS with content namespace
         content |> xpath(~x"//rss[contains(@xmlns:content, 'http://purl.org/rss/1.0/modules/content/')]") ->
-          IO.puts("Detected RSS via content namespace")
           "rss"
 
         # Check for RSS with any common namespace
         content |> xpath(~x"//rss[contains(@xmlns:wfw, 'http://wellformedweb.org/CommentAPI/') or contains(@xmlns:itunes, 'http://www.itunes.com/dtds/podcast-1.0.dtd') or contains(@xmlns:dc, 'http://purl.org/dc/elements/1.1/')]") ->
-          IO.puts("Detected RSS via common namespaces")
           "rss"
 
         # Check for RSS 1.0
         content |> xpath(~x"//rdf:RDF[contains(@xmlns,'http://purl.org/rss/1.0/')]") ->
-          IO.puts("Detected RSS 1.0")
           "rss"
 
         # Check for Atom
         content |> xpath(~x"//feed") ->
-          IO.puts("Detected Atom")
           "atom"
 
         # Default to RSS if we find any RSS-like elements
         content |> xpath(~x"//rss") ->
-          IO.puts("Detected RSS (generic)")
           "rss"
 
         true ->
@@ -60,7 +52,6 @@ defmodule Feedproxy.FeedParser do
   end
 
   defp parse_rss(content, subscription) do
-    now = DateTime.utc_now() |> DateTime.truncate(:second)
     cutoff_date = subscription.last_synced_at
 
     content
@@ -76,12 +67,6 @@ defmodule Feedproxy.FeedParser do
         nil -> true
         _ -> DateTime.compare(item.published_at, cutoff_date) == :gt
       end
-    end)
-    |> Enum.map(fn item ->
-      Map.merge(item, %{
-        inserted_at: now,
-        updated_at: now
-      })
     end)
   end
 
@@ -108,7 +93,6 @@ defmodule Feedproxy.FeedParser do
   end
 
   defp parse_atom(content, subscription) do
-    now = DateTime.utc_now() |> DateTime.truncate(:second)
     cutoff_date = subscription.last_synced_at
 
     content
@@ -124,12 +108,6 @@ defmodule Feedproxy.FeedParser do
         nil -> true
         _ -> DateTime.compare(item.published_at, cutoff_date) == :gt
       end
-    end)
-    |> Enum.map(fn item ->
-      Map.merge(item, %{
-        inserted_at: now,
-        updated_at: now
-      })
     end)
   end
 
