@@ -87,7 +87,7 @@ defmodule Feedproxy.FeedSyncer do
         {:ok, items}
 
       {:error, reason} ->
-        IO.puts("Failed to fetch feed: #{inspect(reason)}")
+        Logger.warning("Failed to fetch feed: #{inspect(reason)}")
         {:error, reason}
     end
   end

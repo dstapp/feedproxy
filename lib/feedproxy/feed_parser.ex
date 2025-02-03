@@ -1,5 +1,6 @@
 defmodule Feedproxy.FeedParser do
   import SweetXml
+  require Logger
 
   def parse(content, subscription) do
     # Determine feed type from content instead of relying on subscription.feed_type
@@ -41,12 +42,12 @@ defmodule Feedproxy.FeedParser do
           "rss"
 
         true ->
-          IO.puts("Could not detect feed type")
+          Logger.warning("Could not detect feed type")
           nil
       end
     rescue
       error ->
-        IO.puts("Error detecting feed type: #{inspect(error)}")
+        Logger.error("Error detecting feed type: #{inspect(error)}")
         nil
     end
   end
@@ -87,7 +88,7 @@ defmodule Feedproxy.FeedParser do
           std_offset: 0
         }
       _ ->
-        IO.puts("Failed to parse date: #{date_string}")
+        Logger.warning("Failed to parse date: #{date_string}")
         DateTime.utc_now()
     end
   end
@@ -116,7 +117,7 @@ defmodule Feedproxy.FeedParser do
       {:ok, datetime, _offset} ->
         datetime
       _ ->
-        IO.puts("Failed to parse atom date: #{date_string}")
+        Logger.warning("Failed to parse atom date: #{date_string}")
         DateTime.utc_now()
     end
   end
