@@ -5,9 +5,9 @@ services:
     environment:
       UID: 1000
       GID: 1000
-      DATABASE_PATH: /data/feedproxy.db
+      DATABASE_PATH: /data/db/feedproxy.db # must be a child folder of /data
       SECRET_KEY_BASE: GtEq3jHhpTOVjr6gxIAV93gQszJG70ijQQoKbYPJqYBUZG0LTo9Dwlp9mmyKbRfiRz3N2oYycwBoppr3UuSNmQ==  # openssl rand -base64 64
     volumes:
-      - ./data:/data
+      - ./data:/data:z
     ports:
     - "4000:4000"
