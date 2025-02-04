@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+<head>
+<title>Reader</title>
+</head>
+<body>
+<outline title="9to5Mac" text="9to5Mac" xmlUrl="https://9to5mac.com/feed/" type="rss" htmlUrl="https://9to5mac.com/" />
+<outline text="heise online News" title="heise online News" xmlUrl="https://www.heise.de/rss/heise.rdf" htmlUrl="https://www.heise.de/" type="rss" />
+</outline>
+</body>
+</opml>
