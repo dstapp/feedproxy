@@ -49,6 +49,7 @@ defmodule FeedproxyWeb.Router do
     # Stream contents
     get "/reader/api/0/stream/contents/*streamId", GreaderApiController, :stream_contents
     post "/reader/api/0/stream/contents/*streamId", GreaderApiController, :stream_contents
+    post "/reader/api/0/stream/items/contents", GreaderApiController, :stream_contents
 
     # Item state management
     post "/reader/api/0/edit-tag", GreaderApiController, :edit_tag
@@ -59,10 +60,7 @@ defmodule FeedproxyWeb.Router do
 
     # Stream item IDs
     get "/reader/api/0/stream/items/ids", GreaderApiController, :stream_item_ids
-
-    # Stream item contents
-    post "/reader/api/0/stream/items/contents", GreaderApiController, :stream_contents
-  end
+ end
 
   # Other scopes may use custom stacks.
   # scope "/api", FeedproxyWeb do

@@ -179,4 +179,16 @@ defmodule Feedproxy.FeedParserTest do
       assert FeedParser.parse(@invalid_feed, %{id: 1, last_synced_at: nil}) == []
     end
   end
+
+  describe "parse_date/1" do
+    test "parses RFC1123 dates" do
+      assert FeedParser.parse_date("Wed, 05 Feb 2025 10:17:19 PST") == ~U[2025-02-05 18:17:19Z]
+    end
+  end
+
+  describe "parse_atom_date/1" do
+    test "parses RFC3339 dates" do
+      assert FeedParser.parse_atom_date("2025-02-05T10:17:19-08:00") == ~U[2025-02-05 18:17:19Z]
+    end
+  end
 end

@@ -69,25 +69,23 @@ defmodule Feedproxy.FeedParser do
     end)
   end
 
-  defp parse_date(date_string) do
-    case :httpd_util.convert_request_date(String.to_charlist(date_string)) do
-      {{year, month, day}, {hour, minute, second}} ->
-        %DateTime{
-          year: year,
-          month: month,
-          day: day,
-          hour: hour,
-          minute: minute,
-          second: second,
-          microsecond: {0, 0},
-          time_zone: "Etc/UTC",
-          zone_abbr: "UTC",
-          utc_offset: 0,
-          std_offset: 0
-        }
-      _ ->
-        Logger.info("Failed to parse date: #{date_string}")
-        DateTime.utc_now()
+  def parse_date(date_string) do
+    iana_timezones = %{
+      "PST" => "-0800", "PDT" => "-0700",  # Pacific Time
+      "MST" => "-0700", "MDT" => "-0600",  # Mountain Time
+      "CST" => "-0600", "CDT" => "-0500",  # Central Time
+      "EST" => "-0500", "EDT" => "-0400"   # Eastern Time
+    }
+
+    # Replace US time zones with their UTC offset
+    date_string =
+      Enum.reduce(iana_timezones, date_string, fn {tz, offset}, acc ->
+        String.replace(acc, tz, offset)
+      end)
+
+    case Timex.parse(date_string, "{RFC1123}") do
+      {:ok, datetime} -> Timex.to_datetime(datetime, "UTC")
+      {:error, _} -> DateTime.utc_now()
     end
   end
 
@@ -110,13 +108,10 @@ defmodule Feedproxy.FeedParser do
     end)
   end
 
-  defp parse_atom_date(date_string) do
-    case DateTime.from_iso8601(date_string) do
-      {:ok, datetime, _offset} ->
-        datetime
-      _ ->
-        Logger.info("Failed to parse atom date: #{date_string}")
-        DateTime.utc_now()
+  def parse_atom_date(date_string) do
+    case Timex.parse(date_string, "{ISO:Extended}") do
+      {:ok, datetime} -> Timex.to_datetime(datetime, "UTC")
+      {:error, _} -> DateTime.utc_now()
     end
   end
 end
