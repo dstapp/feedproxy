@@ -19,7 +19,7 @@ defmodule Feedproxy.MixProject do
   def application do
     [
       mod: {Feedproxy.Application, []},
-      extra_applications: [:logger, :runtime_tools, :inets]
+      extra_applications: [:logger, :runtime_tools]
     ]
   end
 
