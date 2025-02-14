@@ -84,6 +84,7 @@ defmodule FeedproxyWeb.GreaderApiControllerTest do
       assert sub["id"] == "feed/#{subscription.id}"
       assert sub["title"] == subscription.name
       assert sub["url"] == subscription.url
+      assert sub["categories"] == [%{"id"=>"category/all", "label" => "All"}]
     end
 
     test "tag_list returns complete tag structure", %{conn: conn} do

@@ -39,7 +39,7 @@ defmodule FeedproxyWeb.GreaderApiController do
       %{
         "id" => "feed/#{subscription.id}",
         "title" => subscription.name,
-        "categories" => [],
+        "categories" => [%{"id"=>"category/all", "label" => "All"}],
         "url" => subscription.url,
         "htmlUrl" => subscription.url,
         "iconUrl" => ""
